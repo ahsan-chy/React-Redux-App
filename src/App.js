@@ -9,7 +9,7 @@ function App() {
 
   return (
     <div className="App">
-      <h2>Redux App with Technical thapa</h2>
+      <h2>Redux Count App</h2>
        <div className="quantity">
         <button onClick={() => dispatch(decNumber())}><span>-</span></button>
         <h3>{myState}</h3>
