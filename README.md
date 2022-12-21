@@ -1,70 +1,131 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Redux
+Redux is a predictable state container for JavaScript apps.
+Redux is library for JavaScript Application. **Redux** is state management tool(library).
 
-## Available Scripts
+```javascript
+    npm install redux react-redux
+```
+Other packages to install
+```javascript
+    npm install @reduxjs/toolkit
 
-In the project directory, you can run:
+    npm install redux-devtools
 
-### `npm start`
+    npm install redux-thunk
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+    npm install redux-logger
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+    npm install redux-saga
+```
 
-### `npm test`
+Redux Refference Links
+- [Reux](https://redux.js.org/introduction/getting-started)
+- [React Reux](https://react-redux.js.org/introduction/getting-started)
+- [Redux Toolkit](https://redux-toolkit.js.org/introduction/getting-started)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+![redux-overveiw](https://user-images.githubusercontent.com/85479513/208836564-9b459e7c-2af5-4166-80cf-fa31a531a70a.png)
 
-### `npm run build`
+## Action
+Action tells, What to do?
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Actions are **Objects** that are used to send data to **Redux Store**. They 
+typically have two properties
+- Type
+- Payload
+**Payload** property that contains the Information that should be changed in app store.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```javascript
+export const incrNumber= (item) => {
+    return{
+        type: "INCREMENT_NUMBER",
+        payload: item
+    }
+}
+```
+```javascript
+export const decNumber= (item) => {
+    return{
+        type: "DECREMENT_NUMBER",
+        payload: item
+    }
+}
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+![getting-started-with-redux-1096x453](https://user-images.githubusercontent.com/85479513/208836609-6b77f31e-50a4-47f1-97f6-2faa0b437d1f.png)
 
-### `npm run eject`
+## Reducer
+Reducer tells, How to do?
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- How to store data Reducers will tell us.
+- Reducers are pure Functions that implement the action's behavious 
+- (i) They take current application state
+- (ii) Perform an Action
+- (iii) Then Return new State
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```javascript
+const initialState = 10;
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+const changeNumber = (state = initialState, action) => {
+    switch (action.type){
+        case "INCREMENT_NUMBER":
+            return state + 1;
+        case "DECREMENT_NUMBER":
+            return state - 1;
+        default: 
+            return state;
+    }   
+}
+export default changeNumber;
+```
+**Combine Reducers**
+```javascript
+import { combineReducers } from "redux";
+import changeNumber from "./incDec";
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+const rootReducer = combineReducers({
+    changeNumber: changeNumber
+})
 
-## Learn More
+export default rootReducer;
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Store
+Object which holds the state of the Application. The current Redux application state live in an object called Store.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Functions associated with Store 
+- createStore()
+- dispatch(Action)
+- getState()
 
-### Code Splitting
+```javascript
+import { createStore } from "redux";
+import rootReducer from "./reducers/index";
+import { composeWithDevTools } from "redux-devtools-extension";
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+const store = createStore(rootReducer, composeWithDevTools())
 
-### Analyzing the Bundle Size
+export default store;
+```
+```javascript
+store.subscribe(()=> console.log("Store Changed"))
+```
+```javascript
+store.subscribe(()=> console.log(store.getState()))
+```
+```javascript
+store.dispatch(incrNumber())
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+**Index.js**
 
-### Making a Progressive Web App
+Wrape the **APP** component with provider and pass the store to it.
+```javascript
+import store from "./store";
+import { Provider } from 'react-redux';
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+<Provider store={store}>
+      <App />
+</Provider>
+```
 
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
